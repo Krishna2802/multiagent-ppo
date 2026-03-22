@@ -60,7 +60,6 @@ class PPOAgent:
         total_actor_loss, total_critic_loss, total_entropy = 0, 0, 0
         updates = 0
         
-        # Optimize policy for K epochs using Mini-Batches
         for _ in range(K_EPOCHS):
             for batch_indices in get_batches(buffer_size, BATCH_SIZE):
                 b_states = old_states[batch_indices]
@@ -75,21 +74,17 @@ class PPOAgent:
                 dist_entropy = dist.entropy()
                 state_values = self.critic(b_states).squeeze(-1)
                 
-                # Finding the ratio (pi_theta / pi_theta__old)
                 ratios = torch.exp(logprobs - b_old_logprobs)
                 
-                # Actor Surrogate Loss
                 surr1 = ratios * b_advantages
                 surr2 = torch.clamp(ratios, 1 - EPS_CLIP, 1 + EPS_CLIP) * b_advantages
                 loss_actor = -torch.min(surr1, surr2).mean() - 0.01 * dist_entropy.mean()
                 
-                # Critic Clipped Loss
                 v_clipped = b_old_values + torch.clamp(state_values - b_old_values, -EPS_CLIP, EPS_CLIP)
                 loss_critic_unclipped = (state_values - b_returns) ** 2
                 loss_critic_clipped = (v_clipped - b_returns) ** 2
                 loss_critic = 0.5 * torch.max(loss_critic_unclipped, loss_critic_clipped).mean()
                 
-                # Take gradient steps
                 self.optimizer_actor.zero_grad()
                 loss_actor.backward()
                 self.optimizer_actor.step()
@@ -118,7 +113,7 @@ def train():
     writer = SummaryWriter(log_dir="runs/ppo_simple_spread")
     
     os.makedirs("models", exist_ok=True)
-    print("Starting Training...")
+   
     history_rewards = []
     
     for episode in range(1, MAX_EPISODES + 1):
@@ -180,7 +175,7 @@ def train():
     torch.save(ppo_agent.critic.state_dict(), "models/critic_final.pth")
     writer.close()
     
-    print("Training complete. Models saved. View logs with: tensorboard --logdir runs")
+    
     env.close()
 
 if __name__ == '__main__':

@@ -20,13 +20,10 @@ class RolloutBuffer:
         self.is_terminals.clear()
 
 def compute_gae(rewards, state_values, is_terminals, gamma=0.99, lam=0.95):
-    """
-    Computes Generalized Advantage Estimation (GAE).
-    """
+   
     advantages = []
     gae = 0
     
-    # Append 0 for terminal next_value
     values = state_values + [0]
     
     for i in reversed(range(len(rewards))):
@@ -38,14 +35,11 @@ def compute_gae(rewards, state_values, is_terminals, gamma=0.99, lam=0.95):
     advantages = torch.tensor(advantages, dtype=torch.float32)
     returns = advantages + torch.tensor(state_values, dtype=torch.float32)
     
-    # Normalize advantages for stabler PPO updates
     advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-7)
     return advantages, returns
 
 def get_batches(buffer_size, batch_size):
-    """
-    Generates shuffed mini-batch indices.
-    """
+   
     indices = np.arange(buffer_size)
     np.random.shuffle(indices)
     for start in range(0, buffer_size, batch_size):

@@ -1,17 +1,7 @@
 from pettingzoo.mpe import simple_spread_v3
 
 def make_env(render_mode=None, max_cycles=25):
-    """
-    Creates the simple_spread_v3 environment using PettingZoo.
-    We leverage the parallel_env layout to easily step all agents concurrently.
-    
-    Args:
-        render_mode (str): E.g., 'human', 'rgb_array', or None.
-        max_cycles (int): Timesteps per episode.
-    
-    Returns:
-        A PettingZoo Parallel Environment.
-    """
+
     env = simple_spread_v3.parallel_env(
         N=3, 
         local_ratio=0.5, 

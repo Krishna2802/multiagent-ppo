@@ -22,7 +22,7 @@ def evaluate():
     try:
         actor_net.load_state_dict(torch.load("models/actor_final.pth"))
         actor_net.eval()
-        print("Successfully loaded trained models/actor_final.pth weights")
+        
     except FileNotFoundError:
         try:
              actor_net.load_state_dict(torch.load("models/actor.pth"))
@@ -31,7 +31,7 @@ def evaluate():
         except FileNotFoundError:
             print("WARNING: Model weights not found. Using untrained policy.")
 
-    print("Starting Evaluation Episode...")
+    
     obs_dict, _ = env.reset()
     
     while env.agents:

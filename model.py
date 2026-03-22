@@ -16,9 +16,7 @@ class Actor(nn.Module):
         )
 
     def forward(self, obs):
-        """
-        Calculates action probabilities and returns a categorical distribution.
-        """
+        
         action_probs = self.net(obs)
         dist = Categorical(action_probs)
         return dist
@@ -36,9 +34,7 @@ class Critic(nn.Module):
         )
 
     def forward(self, obs):
-        """
-        Outputs a scalar value estimate for the given state.
-        """
+       
         value = self.net(obs)
         return value.squeeze(-1)  
 
